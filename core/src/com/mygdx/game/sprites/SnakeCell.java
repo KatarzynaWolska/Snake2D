@@ -10,7 +10,7 @@ public class SnakeCell extends Sprite {
     private Texture texture;
     private Direction direction;
     private Direction nextDirection;
-    public static final int SNAKE_MOVEMENT = 12;
+    public static final int SNAKE_MOVEMENT = 16;
 
     public SnakeCell() {
         this.texture = new Texture("snake-body.png");
@@ -27,15 +27,15 @@ public class SnakeCell extends Sprite {
         this.direction = Direction.RIGHT;
         this.nextDirection = Direction.RIGHT;
         //defineBody();
-        setBounds(SNAKE_MOVEMENT,SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
+        setBounds(SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
         setRegion(this.texture);
 
     }
 
-    public SnakeCell(float x, float y) {
+    public SnakeCell(float x, float y, Direction direction, Direction nextDirection) {
         this.texture = new Texture("snake-body.png");
-        this.direction = Direction.RIGHT;
-        this.nextDirection = Direction.RIGHT;
+        this.direction = direction;
+        this.nextDirection = nextDirection;
         //defineBody();
         setBounds(x,y, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
         setRegion(this.texture);
@@ -78,7 +78,7 @@ public class SnakeCell extends Sprite {
                 }
                 setPosition(getX(), getY() + SNAKE_MOVEMENT);
 
-                if(getY() > PlayScreen.WORLD_HEIGHT) {
+                if(getY() >= PlayScreen.WORLD_HEIGHT) {
                     setPosition(getX(), 0);
                 }
 
@@ -93,7 +93,7 @@ public class SnakeCell extends Sprite {
                 setPosition(getX(), getY() - SNAKE_MOVEMENT);
 
                 if(getY() < 0) {
-                    setPosition(getX(), PlayScreen.WORLD_HEIGHT);
+                    setPosition(getX(), PlayScreen.WORLD_HEIGHT - SNAKE_MOVEMENT);
                 }
 
                 break;
@@ -107,7 +107,7 @@ public class SnakeCell extends Sprite {
                 setPosition(getX() - SNAKE_MOVEMENT, getY());
 
                 if(getX() < 0) {
-                    setPosition(PlayScreen.WORLD_WIDTH, getY());
+                    setPosition(PlayScreen.WORLD_WIDTH - SNAKE_MOVEMENT, getY());
                 }
 
                 break;
@@ -120,13 +120,17 @@ public class SnakeCell extends Sprite {
                 }
                 setPosition(getX() + SNAKE_MOVEMENT, getY());
 
-                if(getX() > PlayScreen.WORLD_WIDTH) {
+                if(getX() >= PlayScreen.WORLD_WIDTH) {
                     setPosition(0, getY());
                 }
 
                 break;
         }
         direction = nextDirection;
+    }
+
+    public boolean checkPosition(int x, int y) {
+        return (!(x == getX())) && (!(y == getY()));
     }
 
     public void draw(Batch batch){

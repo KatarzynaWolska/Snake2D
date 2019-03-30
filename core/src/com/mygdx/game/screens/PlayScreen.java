@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Direction;
 import com.mygdx.game.Snake;
 import com.mygdx.game.SnakeGame;
+import com.mygdx.game.sprites.Food;
 
 public class PlayScreen implements Screen {
 
@@ -31,9 +32,11 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
 
     private Snake snake;
+    private Food food;
 
+    private boolean gameOver = false;
 
-    public static final int WORLD_WIDTH = 400; //można zmienić na 408 i wtedy zmienić mapy
+    public static final int WORLD_WIDTH = 400;
     public static final int WORLD_HEIGHT = 400;
 
 
@@ -50,6 +53,8 @@ public class PlayScreen implements Screen {
         debugRenderer = new Box2DDebugRenderer();
 
         snake = new Snake();
+        food = new Food();
+        food.generateFoodPosition(snake);
     }
 
     @Override
@@ -57,17 +62,24 @@ public class PlayScreen implements Screen {
 
     }
 
-    public void update(float deltaTime) {
+    private void update(float deltaTime) {
+        if(!gameOver) {
+            handleInput(deltaTime);
 
-        handleInput(deltaTime);
+            world.step(1 / 60f, 6, 2);
 
-        world.step(1 / 60f, 6, 2);
+            gameCamera.update();
 
-        gameCamera.update();
+            snake.updatePosition();
 
-        snake.updatePosition();
+            snake.checkFoodCollision(food);
 
-        renderer.setView(gameCamera);
+            if (snake.checkSnakeCollision()) {
+                gameOver = true;
+            }
+
+            renderer.setView(gameCamera);
+        }
     }
 
     private void handleInput(float deltaTime) {
@@ -99,6 +111,7 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCamera.combined);
         game.batch.begin();
         snake.draw(game.batch);
+        food.draw(game.batch);
         game.batch.end();
 
     }
