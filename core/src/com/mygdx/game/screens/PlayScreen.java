@@ -5,9 +5,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.Map;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -45,16 +51,20 @@ public class PlayScreen implements Screen {
         gameCamera = new OrthographicCamera();
         gameViewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, gameCamera);
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("level1.tmx");
+        map = mapLoader.load("level2.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         gameCamera.position.set(gameViewport.getWorldWidth() / 2, gameViewport.getWorldHeight() / 2, 0);
 
         world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
 
-        snake = new Snake();
+        snake = new Snake(map);
         food = new Food();
         food.generateFoodPosition(snake);
+
+        while(snake.checkWallCollision(food)) {
+            food.generateFoodPosition(snake);
+        }
     }
 
     @Override
@@ -74,7 +84,8 @@ public class PlayScreen implements Screen {
 
             snake.checkFoodCollision(food);
 
-            if (snake.checkSnakeCollision()) {
+
+            if (snake.checkSnakeCollision() || snake.checkWallCollision(snake.getSnakeHead())) {
                 gameOver = true;
             }
 

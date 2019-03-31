@@ -6,7 +6,7 @@ import com.mygdx.game.SnakeGame;
 
 public class DesktopLauncher {
 
-	public static final int FPS = 10;
+	public static final int FPS = 15;
 
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
