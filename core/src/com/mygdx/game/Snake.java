@@ -3,44 +3,43 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.Map;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.game.sprites.Food;
-import com.mygdx.game.sprites.SnakeCell;
+import com.mygdx.game.sprites.MovingCell;
 
 public class Snake {
-    private SnakeCell snakeHead;
-    private Array<SnakeCell> snakeBody;
-    private Map map;
+    private MovingCell snakeHead;
+    private Array<MovingCell> snakeBody;
+    private TiledMap map;
 
     private static final int INITIAL_SNAKE_LENGTH = 5;
 
-    public Snake(Map map) {
+    public static final String HEAD_TEXTURE_PATH = "snake-head.png";
+    public static final String BODY_TEXTURE_PATH = "snake-body.png";
+
+
+    public Snake(TiledMap map) {
         this.map = map;
-        this.snakeHead = new SnakeCell(INITIAL_SNAKE_LENGTH * SnakeCell.SNAKE_MOVEMENT, SnakeCell.SNAKE_MOVEMENT, "snake-head.png");
+        this.snakeHead = new MovingCell(INITIAL_SNAKE_LENGTH * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT, HEAD_TEXTURE_PATH, map);
         this.snakeHead.flip(true, false);
         this.snakeBody = createSnakeBody();
     }
 
-    private Array<SnakeCell> createSnakeBody() {
-        Array<SnakeCell> snakeBody = new Array<SnakeCell>();
+    private Array<MovingCell> createSnakeBody() {
+        Array<MovingCell> snakeBody = new Array<MovingCell>();
 
         for (int i = 1; i < INITIAL_SNAKE_LENGTH; i++) {
-            snakeBody.add(new SnakeCell(i * SnakeCell.SNAKE_MOVEMENT, SnakeCell.SNAKE_MOVEMENT, "snake-body.png"));
+            snakeBody.add(new MovingCell(i * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT, BODY_TEXTURE_PATH, map));
         }
 
         return snakeBody;
     }
 
-    public Array<SnakeCell> getSnakeBody() {
+    public Array<MovingCell> getSnakeBody() {
         return snakeBody;
     }
 
-    public SnakeCell getSnakeHead() {
+    public MovingCell getSnakeHead() {
         return snakeHead;
     }
 
@@ -61,70 +60,43 @@ public class Snake {
         }
     }
 
-    private void eat() {
-        SnakeCell lastCell = snakeBody.get(0);
+    public void eat() {
+        MovingCell lastCell = snakeBody.get(0);
 
         switch (lastCell.getDirection()) {
             case RIGHT:
-                snakeBody.insert(0, new SnakeCell(lastCell.getX() - SnakeCell.SNAKE_MOVEMENT, lastCell.getY(), Direction.RIGHT, lastCell.getDirection()));
+                snakeBody.insert(0, new MovingCell(lastCell.getX() - MovingCell.SNAKE_MOVEMENT, lastCell.getY(), Direction.RIGHT, lastCell.getDirection(), map));
                 break;
             case LEFT:
-                snakeBody.insert(0, new SnakeCell(lastCell.getX() + SnakeCell.SNAKE_MOVEMENT, lastCell.getY(), Direction.LEFT, lastCell.getDirection()));
+                snakeBody.insert(0, new MovingCell(lastCell.getX() + MovingCell.SNAKE_MOVEMENT, lastCell.getY(), Direction.LEFT, lastCell.getDirection(), map));
                 break;
             case DOWN:
-                snakeBody.insert(0, new SnakeCell(lastCell.getX(), lastCell.getY() + SnakeCell.SNAKE_MOVEMENT, Direction.DOWN, lastCell.getDirection()));
+                snakeBody.insert(0, new MovingCell(lastCell.getX(), lastCell.getY() + MovingCell.SNAKE_MOVEMENT, Direction.DOWN, lastCell.getDirection(), map));
                 break;
             case UP:
-                snakeBody.insert(0, new SnakeCell(lastCell.getX(), lastCell.getY() - SnakeCell.SNAKE_MOVEMENT, Direction.UP, lastCell.getDirection()));
+                snakeBody.insert(0, new MovingCell(lastCell.getX(), lastCell.getY() - MovingCell.SNAKE_MOVEMENT, Direction.UP, lastCell.getDirection(), map));
                 break;
-        }
-    }
-
-    public void checkFoodCollision(Food food) {
-        if (checkCollision(food)) {
-            eat();
-            food.generateFoodPosition(this);
-
-            while(checkWallCollision(food)) {
-                food.generateFoodPosition(this);
-            }
         }
     }
 
     public boolean checkSnakeCollision() {
-        for (SnakeCell snakeCell : snakeBody) {
-            if (checkCollision(snakeCell)) {
+        for (MovingCell snakeCell : snakeBody) {
+            if (checkSnakeHeadCollision(snakeCell)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean checkWallCollision(Sprite sprite) {
-        if (map.getLayers().size() > 1) {
-            for (MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
 
-                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-                if (Intersector.overlaps(rectangle, sprite.getBoundingRectangle())) {
-                    return true;
-                }
-
-            }
-
-            return false;
-        } else {
-            return false;
-        }
-    }
-
-    private boolean checkCollision(Sprite sprite) {
+    public boolean checkSnakeHeadCollision(Sprite sprite) {
         return (snakeHead.getX() == sprite.getX()) && (snakeHead.getY() == sprite.getY());
     }
 
     public void draw(SpriteBatch batch) {
         snakeHead.draw(batch);
 
-        for (SnakeCell snakeCell : snakeBody) {
+        for (MovingCell snakeCell : snakeBody) {
             snakeCell.draw(batch);
         }
     }

@@ -1,5 +1,5 @@
 apply plugin: "java"
-sourceCompatibility = 1.6
+sourceCompatibility = 1.8
 sourceSets.main.java.srcDirs = ["src/"]
 project.ext.mainClassName = "com.mygdx.game.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/assets");
@@ -28,6 +28,11 @@ task dist(type: Jar) {
         attributes 'Main-Class': project.mainClassName
     }
 }
+tasks.withType(JavaCompile) {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}
+
 dist.dependsOn classes
 eclipse {
     project {

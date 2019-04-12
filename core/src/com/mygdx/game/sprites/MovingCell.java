@@ -1,28 +1,33 @@
 package com.mygdx.game.sprites;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.game.Direction;
+import com.mygdx.game.Snake;
 import com.mygdx.game.screens.PlayScreen;
 
-public class SnakeCell extends Sprite {
-    private Texture texture;
+public class MovingCell extends Cell {
     private Direction direction;
     private Direction nextDirection;
-    public static final int SNAKE_MOVEMENT = 16;
 
-    public SnakeCell() {
+    //texture = "snake-body.png"
+
+    public MovingCell(String pathToTexture, TiledMap map) {
+        super(pathToTexture, map);
+        this.direction = Direction.RIGHT;
+        this.nextDirection = Direction.RIGHT;
+        setBounds(SNAKE_MOVEMENT,SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
+    }
+
+    /*public MovingCell() {
         this.texture = new Texture("snake-body.png");
         this.direction = Direction.RIGHT;
         this.nextDirection = Direction.RIGHT;
-        //defineBody();
         setBounds(SNAKE_MOVEMENT,SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
-        setRegion(this.texture);
 
     }
 
-    public SnakeCell(String pathToTexture) {
+    public MovingCell(String pathToTexture) {
         this.texture = new Texture(pathToTexture);
         this.direction = Direction.RIGHT;
         this.nextDirection = Direction.RIGHT;
@@ -30,25 +35,20 @@ public class SnakeCell extends Sprite {
         setBounds(SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
         setRegion(this.texture);
 
-    }
+    }*/
 
-    public SnakeCell(float x, float y, Direction direction, Direction nextDirection) {
-        this.texture = new Texture("snake-body.png");
+    public MovingCell(float x, float y, Direction direction, Direction nextDirection, TiledMap map) {
+        super(Snake.BODY_TEXTURE_PATH, map);
         this.direction = direction;
         this.nextDirection = nextDirection;
-        //defineBody();
         setBounds(x,y, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
-        setRegion(this.texture);
-
     }
 
-    public SnakeCell(float x, float y, String pathToTexture) {
-        this.texture = new Texture(pathToTexture);
+    public MovingCell(float x, float y, String pathToTexture, TiledMap map) {
+        super(pathToTexture, map);
         this.direction = Direction.RIGHT;
         this.nextDirection = Direction.RIGHT;
         setBounds(x,y, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
-        setRegion(this.texture);
-
     }
 
     public Direction getNextDirection() {

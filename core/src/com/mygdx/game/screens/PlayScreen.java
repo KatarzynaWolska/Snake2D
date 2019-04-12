@@ -5,15 +5,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.maps.Map;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -23,6 +17,7 @@ import com.mygdx.game.Direction;
 import com.mygdx.game.Snake;
 import com.mygdx.game.SnakeGame;
 import com.mygdx.game.sprites.Food;
+import com.mygdx.game.sprites.Spider;
 
 public class PlayScreen implements Screen {
 
@@ -39,6 +34,7 @@ public class PlayScreen implements Screen {
 
     private Snake snake;
     private Food food;
+    private Spider spider;
 
     private boolean gameOver = false;
 
@@ -51,7 +47,7 @@ public class PlayScreen implements Screen {
         gameCamera = new OrthographicCamera();
         gameViewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, gameCamera);
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("level2.tmx");
+        map = mapLoader.load("level1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         gameCamera.position.set(gameViewport.getWorldWidth() / 2, gameViewport.getWorldHeight() / 2, 0);
 
@@ -59,11 +55,14 @@ public class PlayScreen implements Screen {
         debugRenderer = new Box2DDebugRenderer();
 
         snake = new Snake(map);
-        food = new Food();
-        food.generateFoodPosition(snake);
+        food = new Food(Food.TEXTURE_PATH, map);
+        spider = new Spider(Spider.TEXTURE_PATH, map);
+        food.generateFoodPosition(food, snake, food.getRandomGenerator());
+        spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
 
-        while(snake.checkWallCollision(food)) {
-            food.generateFoodPosition(snake);
+        while(food.checkWallCollision() || spider.checkWallCollision()) {
+            food.generateFoodPosition(food, snake, food.getRandomGenerator());
+            spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
         }
     }
 
@@ -80,16 +79,45 @@ public class PlayScreen implements Screen {
 
             gameCamera.update();
 
+            //snake.checkFoodCollision(food);
+            //snake.checkFoodCollision(spider);
+
+            spider.updatePosition();
+
+            checkAllColisions();
+
             snake.updatePosition();
 
-            snake.checkFoodCollision(food);
-
-
-            if (snake.checkSnakeCollision() || snake.checkWallCollision(snake.getSnakeHead())) {
-                gameOver = true;
-            }
+            checkAllColisions();
 
             renderer.setView(gameCamera);
+        }
+    }
+
+    private void checkAllColisions() {
+        if(food.checkSnakeCollision(food, snake)) {
+            snake.eat();
+            food.generateFoodPosition(food, snake, food.getRandomGenerator());
+
+            while(food.checkWallCollision()) {
+                food.generateFoodPosition(food, snake, food.getRandomGenerator());
+            }
+        }
+
+
+        if(spider.checkSnakeCollision(spider, snake)){
+
+            snake.eat();
+            spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
+
+            while(spider.checkWallCollision()) {
+                spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
+            }
+        }
+
+
+        if (snake.checkSnakeCollision() || snake.getSnakeHead().checkWallCollision()) {
+            gameOver = true;
         }
     }
 
@@ -123,6 +151,7 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         snake.draw(game.batch);
         food.draw(game.batch);
+        spider.draw(game.batch);
         game.batch.end();
 
     }
