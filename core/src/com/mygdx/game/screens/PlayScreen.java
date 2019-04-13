@@ -30,6 +30,7 @@ public class PlayScreen implements Screen {
     private TmxMapLoader mapLoader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
+    private Hud hud;
 
     private World world;
     private Box2DDebugRenderer debugRenderer;
@@ -39,10 +40,15 @@ public class PlayScreen implements Screen {
     private Spider spider;
 
     private boolean gameOver = false;
+    private boolean renderSpider = false;
+    private int lastSpiderScore = 0;
 
     public static final int WORLD_WIDTH = 400;
     public static final int WORLD_HEIGHT = 400;
-    private static final int FPS_SLEEP = 10;
+    private static final int FPS_SLEEP = 20;
+
+    private static final int FOOD_SCORE = 10;
+    private static final int SPIDER_SCORE = 20;
 
 
     public PlayScreen(SnakeGame game) {
@@ -57,15 +63,16 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
 
+        hud = new Hud(game.batch);
+
         snake = new Snake(map);
         food = new Food(Food.TEXTURE_PATH, map);
         spider = new Spider(Spider.TEXTURE_PATH, map);
-        food.generateFoodPosition(food, snake, food.getRandomGenerator());
-        spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
 
-        while(food.checkWallCollision() || spider.checkWallCollision()) {
+        food.generateFoodPosition(food, snake, food.getRandomGenerator());
+
+        while(food.checkWallCollision()) {
             food.generateFoodPosition(food, snake, food.getRandomGenerator());
-            spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
         }
 
         Gdx.input.setInputProcessor(new GestureDetector(new SnakeController(snake)));
@@ -84,8 +91,21 @@ public class PlayScreen implements Screen {
 
             gameCamera.update();
 
-            spider.updatePosition();
-            spider.hitObstacle(snake, food);
+            if(hud.getScore() - lastSpiderScore >= 50 && !renderSpider) {
+                renderSpider = true;
+
+                spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
+                spider.generateRandomDirection();
+
+                while(spider.checkWallCollision()) {
+                    spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
+                }
+            }
+
+            if(renderSpider) {
+                spider.updatePosition();
+                spider.hitObstacle(snake, food);
+            }
 
             checkAllColissions();
 
@@ -100,6 +120,7 @@ public class PlayScreen implements Screen {
     private void checkAllColissions() {
         if(food.checkSnakeCollision(food, snake)) {
             snake.eat();
+            hud.addScore(FOOD_SCORE);
             food.generateFoodPosition(food, snake, food.getRandomGenerator());
 
             while(food.checkWallCollision()) {
@@ -108,15 +129,18 @@ public class PlayScreen implements Screen {
         }
 
 
-        if(spider.checkSnakeCollision(spider, snake)){
-
+        if(renderSpider && spider.checkSnakeCollision(spider, snake)){
             snake.eat();
-            spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
+            lastSpiderScore = hud.getScore();
+            hud.addScore(SPIDER_SCORE);
+            renderSpider = false;
+
+            /*spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
             spider.generateRandomDirection();
 
             while(spider.checkWallCollision()) {
                 spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
-            }
+            }*/
         }
 
 
@@ -157,11 +181,11 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        sleep(FPS_SLEEP);
-        update();
-
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        sleep(FPS_SLEEP);
+        update();
 
         renderer.render();
 
@@ -171,9 +195,13 @@ public class PlayScreen implements Screen {
         game.batch.begin();
         snake.draw(game.batch);
         food.draw(game.batch);
-        spider.draw(game.batch);
+        if(renderSpider) {
+            spider.draw(game.batch);
+        }
         game.batch.end();
 
+        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.stage.draw();
     }
 
     @Override
@@ -202,5 +230,6 @@ public class PlayScreen implements Screen {
         renderer.dispose();
         world.dispose();
         debugRenderer.dispose();
+        hud.dispose();
     }
 }

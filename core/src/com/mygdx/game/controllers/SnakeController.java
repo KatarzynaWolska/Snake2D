@@ -1,6 +1,5 @@
 package com.mygdx.game.controllers;
 
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Direction;
