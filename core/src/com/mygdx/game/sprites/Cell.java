@@ -62,4 +62,8 @@ public class Cell extends Sprite {
             return false;
         }
     }
+
+    public boolean checkCellsCollision(Cell cell) {
+        return (cell.getX() == getX()) && (cell.getY() == getY());
+    }
 }

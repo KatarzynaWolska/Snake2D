@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.Direction;
 import com.mygdx.game.Snake;
 import com.mygdx.game.SnakeGame;
+import com.mygdx.game.controllers.SnakeController;
 import com.mygdx.game.sprites.Food;
 import com.mygdx.game.sprites.Spider;
 
@@ -40,6 +42,7 @@ public class PlayScreen implements Screen {
 
     public static final int WORLD_WIDTH = 400;
     public static final int WORLD_HEIGHT = 400;
+    private static final int FPS_SLEEP = 10;
 
 
     public PlayScreen(SnakeGame game) {
@@ -64,6 +67,8 @@ public class PlayScreen implements Screen {
             food.generateFoodPosition(food, snake, food.getRandomGenerator());
             spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
         }
+
+        Gdx.input.setInputProcessor(new GestureDetector(new SnakeController(snake)));
     }
 
     @Override
@@ -71,30 +76,28 @@ public class PlayScreen implements Screen {
 
     }
 
-    private void update(float deltaTime) {
+    private void update() {
         if(!gameOver) {
-            handleInput(deltaTime);
+            handleInput();
 
             world.step(1 / 60f, 6, 2);
 
             gameCamera.update();
 
-            //snake.checkFoodCollision(food);
-            //snake.checkFoodCollision(spider);
-
             spider.updatePosition();
+            spider.hitObstacle(snake, food);
 
-            checkAllColisions();
+            checkAllColissions();
 
             snake.updatePosition();
 
-            checkAllColisions();
+            checkAllColissions();
 
             renderer.setView(gameCamera);
         }
     }
 
-    private void checkAllColisions() {
+    private void checkAllColissions() {
         if(food.checkSnakeCollision(food, snake)) {
             snake.eat();
             food.generateFoodPosition(food, snake, food.getRandomGenerator());
@@ -109,6 +112,7 @@ public class PlayScreen implements Screen {
 
             snake.eat();
             spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
+            spider.generateRandomDirection();
 
             while(spider.checkWallCollision()) {
                 spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
@@ -121,7 +125,7 @@ public class PlayScreen implements Screen {
         }
     }
 
-    private void handleInput(float deltaTime) {
+    private void handleInput() {
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && snake.getSnakeHead().getDirection() != Direction.DOWN) {
                 snake.setDirection(Direction.UP);
             }
@@ -136,9 +140,25 @@ public class PlayScreen implements Screen {
             }
     }
 
+    private void sleep(int fps) {
+        long diff, start = System.currentTimeMillis();
+        if(fps>0){
+            diff = System.currentTimeMillis() - start;
+            long targetDelay = 1000/fps;
+            if (diff < targetDelay) {
+                try{
+                    Thread.sleep(targetDelay - diff);
+                } catch (InterruptedException e) {
+                    System.out.println(e.toString());
+                }
+            }
+        }
+    }
+
     @Override
     public void render(float delta) {
-        update(delta);
+        sleep(FPS_SLEEP);
+        update();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

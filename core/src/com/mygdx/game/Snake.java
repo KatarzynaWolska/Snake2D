@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.sprites.Cell;
 import com.mygdx.game.sprites.MovingCell;
 
 public class Snake {
@@ -82,6 +83,15 @@ public class Snake {
     public boolean checkSnakeCollision() {
         for (MovingCell snakeCell : snakeBody) {
             if (checkSnakeHeadCollision(snakeCell)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkSnakeCollision(Cell cell) {
+        for (MovingCell snakeCell : snakeBody) {
+            if (snakeCell.checkCellsCollision(cell)) {
                 return true;
             }
         }
