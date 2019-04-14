@@ -166,6 +166,7 @@ public class PlayScreen implements Screen {
 
     private void sleep(int fps) {
         long diff, start = System.currentTimeMillis();
+        update();
         if(fps>0){
             diff = System.currentTimeMillis() - start;
             long targetDelay = 1000/fps;
@@ -185,7 +186,6 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         sleep(FPS_SLEEP);
-        update();
 
         renderer.render();
 
@@ -202,6 +202,12 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+
+        if(gameOver) {
+            game.setScreen(new GameOverScreen(game));
+            dispose();
+        }
+
     }
 
     @Override

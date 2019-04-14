@@ -8,6 +8,12 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.sprites.Cell;
 import com.mygdx.game.sprites.MovingCell;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+
+import javax.swing.DropMode;
+
 public class Snake {
     private MovingCell snakeHead;
     private Array<MovingCell> snakeBody;
@@ -27,7 +33,7 @@ public class Snake {
     }
 
     private Array<MovingCell> createSnakeBody() {
-        Array<MovingCell> snakeBody = new Array<MovingCell>();
+        Array<MovingCell> snakeBody = new Array<>();
 
         for (int i = 1; i < INITIAL_SNAKE_LENGTH; i++) {
             snakeBody.add(new MovingCell(i * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT, BODY_TEXTURE_PATH, map));
@@ -59,6 +65,7 @@ public class Snake {
             snakeBody.get(i).updatePosition();
             snakeBody.get(i).setNextDirection(snakeBody.get(i + 1).getDirection());
         }
+
     }
 
     public void eat() {
@@ -72,10 +79,10 @@ public class Snake {
                 snakeBody.insert(0, new MovingCell(lastCell.getX() + MovingCell.SNAKE_MOVEMENT, lastCell.getY(), Direction.LEFT, lastCell.getDirection(), map));
                 break;
             case DOWN:
-                snakeBody.insert(0, new MovingCell(lastCell.getX(), lastCell.getY() + MovingCell.SNAKE_MOVEMENT, Direction.DOWN, lastCell.getDirection(), map));
+                snakeBody.insert(0,new MovingCell(lastCell.getX(), lastCell.getY() + MovingCell.SNAKE_MOVEMENT, Direction.DOWN, lastCell.getDirection(), map));
                 break;
             case UP:
-                snakeBody.insert(0, new MovingCell(lastCell.getX(), lastCell.getY() - MovingCell.SNAKE_MOVEMENT, Direction.UP, lastCell.getDirection(), map));
+                snakeBody.insert(0,new MovingCell(lastCell.getX(), lastCell.getY() - MovingCell.SNAKE_MOVEMENT, Direction.UP, lastCell.getDirection(), map));
                 break;
         }
     }
