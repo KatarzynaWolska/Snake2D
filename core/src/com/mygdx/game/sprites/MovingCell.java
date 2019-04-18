@@ -1,6 +1,7 @@
 package com.mygdx.game.sprites;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.game.Direction;
 import com.mygdx.game.Snake;
@@ -12,8 +13,8 @@ public class MovingCell extends Cell {
 
     //texture = "snake-body.png"
 
-    public MovingCell(String pathToTexture, TiledMap map) {
-        super(pathToTexture, map);
+    public MovingCell(TextureAtlas atlas, String pathToTexture, TiledMap map, float x1, float y1, float width, float height) {
+        super(atlas, pathToTexture, map, x1, y1, width, height);
         this.direction = Direction.RIGHT;
         this.nextDirection = Direction.RIGHT;
         setBounds(SNAKE_MOVEMENT,SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
@@ -37,15 +38,15 @@ public class MovingCell extends Cell {
 
     }*/
 
-    public MovingCell(float x, float y, Direction direction, Direction nextDirection, TiledMap map) {
-        super(Snake.BODY_TEXTURE_PATH, map);
+    public MovingCell(float x, float y, TextureAtlas atlas, Direction direction, Direction nextDirection, TiledMap map, float x1, float y1, float width, float height) {
+        super(atlas, Snake.BODY_TEXTURE_PATH, map, x1, y1, width, height);
         this.direction = direction;
         this.nextDirection = nextDirection;
         setBounds(x,y, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
     }
 
-    public MovingCell(float x, float y, String pathToTexture, TiledMap map) {
-        super(pathToTexture, map);
+    public MovingCell(float x, float y, TextureAtlas atlas, String pathToTexture, TiledMap map, float x1, float y1, float width, float height) {
+        super(atlas, pathToTexture, map, x1, y1, width, height);
         this.direction = Direction.RIGHT;
         this.nextDirection = Direction.RIGHT;
         setBounds(x,y, SNAKE_MOVEMENT, SNAKE_MOVEMENT);

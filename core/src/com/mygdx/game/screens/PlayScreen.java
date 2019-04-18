@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -21,6 +23,8 @@ import com.mygdx.game.controllers.SnakeController;
 import com.mygdx.game.sprites.Food;
 import com.mygdx.game.sprites.Spider;
 
+import java.util.concurrent.TimeUnit;
+
 public class PlayScreen implements Screen {
 
     private SnakeGame game;
@@ -34,6 +38,7 @@ public class PlayScreen implements Screen {
 
     private World world;
     private Box2DDebugRenderer debugRenderer;
+    private TextureAtlas atlas;
 
     private Snake snake;
     private Food food;
@@ -62,12 +67,13 @@ public class PlayScreen implements Screen {
 
         world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
+        atlas = new TextureAtlas("Snake2D.pack");
 
         hud = new Hud(game.batch);
 
-        snake = new Snake(map);
-        food = new Food(Food.TEXTURE_PATH, map);
-        spider = new Spider(Spider.TEXTURE_PATH, map);
+        snake = new Snake(map, atlas);
+        food = new Food(Food.TEXTURE_PATH, map, atlas);
+        spider = new Spider(Spider.TEXTURE_PATH, map, atlas);
 
         food.generateFoodPosition(food, snake, food.getRandomGenerator());
 
@@ -76,6 +82,10 @@ public class PlayScreen implements Screen {
         }
 
         Gdx.input.setInputProcessor(new GestureDetector(new SnakeController(snake)));
+    }
+
+    public TextureAtlas getAtlas() {
+        return atlas;
     }
 
     @Override
@@ -134,13 +144,6 @@ public class PlayScreen implements Screen {
             lastSpiderScore = hud.getScore();
             hud.addScore(SPIDER_SCORE);
             renderSpider = false;
-
-            /*spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
-            spider.generateRandomDirection();
-
-            while(spider.checkWallCollision()) {
-                spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
-            }*/
         }
 
 
@@ -172,7 +175,8 @@ public class PlayScreen implements Screen {
             long targetDelay = 1000/fps;
             if (diff < targetDelay) {
                 try{
-                    Thread.sleep(targetDelay - diff);
+                    //Thread.sleep(targetDelay - diff);
+                    TimeUnit.MILLISECONDS.sleep(targetDelay - diff);
                 } catch (InterruptedException e) {
                     System.out.println(e.toString());
                 }

@@ -11,8 +11,6 @@ import com.mygdx.game.screens.PlayScreen;
 public class SnakeGame extends Game {
     public SpriteBatch batch;
 
-    public static final float PIXELS_PER_METER = 150;
-
     @Override
     public void create () {
         this.batch = new SpriteBatch();

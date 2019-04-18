@@ -2,6 +2,8 @@ package com.mygdx.game.sprites;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -14,7 +16,7 @@ public class Cell extends Sprite {
 
     private int x_coord;
     private int y_coord;
-    private Texture texture;
+    private TextureRegion texture;
     private TiledMap map;
     private Random randomGenerator;
 
@@ -23,14 +25,15 @@ public class Cell extends Sprite {
     public static final int SNAKE_MOVEMENT = 16;
 
 
-    public Cell(String pathToTexture, TiledMap map) {
+    public Cell(TextureAtlas atlas, String pathToTexture, TiledMap map, float x1, float y1, float width, float height) {
+        super(atlas.findRegion(pathToTexture));
         this.map = map;
-        this.texture = new Texture(pathToTexture);
+        this.texture = new TextureRegion(getTexture(), x1, y1, width, height);
         this.x_coord = 0;
         this.y_coord = 0;
         this.randomGenerator = new Random();
         setBounds(x_coord, y_coord, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
-        setRegion(this.texture);
+        setRegion(atlas.findRegion(pathToTexture));
     }
 
     public void setX_coord(int x_coord) {

@@ -1,16 +1,17 @@
 package com.mygdx.game.sprites;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.game.Direction;
 import com.mygdx.game.Snake;
 
 public class Spider extends MovingCell implements FoodInterface {
 
-    public static final String TEXTURE_PATH = "spider.png";
+    public static final String TEXTURE_PATH = "spider";
     private static final int NUMBER_OF_DIRECTIONS = 4;
 
-    public Spider(String pathToTexture, TiledMap map) {
-        super(pathToTexture, map);
+    public Spider(String pathToTexture, TiledMap map, TextureAtlas atlas) {
+        super(atlas, pathToTexture, map, 16, 0, 16, 16);
     }
 
     public void hitObstacle(Snake snake, Food food) {

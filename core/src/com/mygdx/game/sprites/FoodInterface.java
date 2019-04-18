@@ -40,17 +40,7 @@ public interface FoodInterface {
     }
 
     default boolean checkSnakeCollision(Cell food, Snake snake) {
-        if (snake.checkSnakeHeadCollision(food)) {
-            return true;
-
-            /*snake.eat();
-            food.generateFoodPosition(food, this, food.getRandomGenerator());
-
-            while(food.checkWallCollision()) {
-                food.generateFoodPosition(food, this, food.getRandomGenerator());
-            }*/
-        }
-        return false;
+        return snake.checkSnakeHeadCollision(food);
     }
 
 }

@@ -1,45 +1,42 @@
 package com.mygdx.game;
 
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.sprites.Cell;
 import com.mygdx.game.sprites.MovingCell;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-
-import javax.swing.DropMode;
-
 public class Snake {
     private MovingCell snakeHead;
     private Array<MovingCell> snakeBody;
     private TiledMap map;
+    private TextureAtlas atlas;
 
     private static final int INITIAL_SNAKE_LENGTH = 5;
 
-    public static final String HEAD_TEXTURE_PATH = "snake-head.png";
-    public static final String BODY_TEXTURE_PATH = "snake-body.png";
+    public static final String HEAD_TEXTURE_PATH = "snake-head";
+    public static final String BODY_TEXTURE_PATH = "snake-body";
 
 
-    public Snake(TiledMap map) {
+    public Snake(TiledMap map, TextureAtlas atlas) {
         this.map = map;
-        this.snakeHead = new MovingCell(INITIAL_SNAKE_LENGTH * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT, HEAD_TEXTURE_PATH, map);
+        this.atlas = atlas;
+        this.snakeHead = new MovingCell(INITIAL_SNAKE_LENGTH * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT, atlas, HEAD_TEXTURE_PATH, map, 0, 16, 16, 16); //wywalić teskture
         this.snakeHead.flip(true, false);
-        this.snakeBody = createSnakeBody();
+        createSnakeBody();
     }
 
-    private Array<MovingCell> createSnakeBody() {
+    private void createSnakeBody() {
         Array<MovingCell> snakeBody = new Array<>();
 
         for (int i = 1; i < INITIAL_SNAKE_LENGTH; i++) {
-            snakeBody.add(new MovingCell(i * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT, BODY_TEXTURE_PATH, map));
+            MovingCell cell = new MovingCell(i * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT, atlas, BODY_TEXTURE_PATH, map, 16, 16, 16, 16);
+            snakeBody.add(cell);
         }
 
-        return snakeBody;
+        this.snakeBody = snakeBody;
     }
 
     public Array<MovingCell> getSnakeBody() {
@@ -51,7 +48,6 @@ public class Snake {
     }
 
     public void setDirection(Direction direction) {
-        //snakeHead.setDirection(direction);
         snakeHead.setNextDirection(direction);
     }
 
@@ -59,7 +55,6 @@ public class Snake {
         snakeHead.updatePosition();
         snakeBody.get(snakeBody.size - 1).updatePosition();
         snakeBody.get(snakeBody.size - 1).setNextDirection(snakeHead.getDirection());
-
 
         for (int i = snakeBody.size - 2; i >= 0; i--) {
             snakeBody.get(i).updatePosition();
@@ -73,16 +68,16 @@ public class Snake {
 
         switch (lastCell.getDirection()) {
             case RIGHT:
-                snakeBody.insert(0, new MovingCell(lastCell.getX() - MovingCell.SNAKE_MOVEMENT, lastCell.getY(), Direction.RIGHT, lastCell.getDirection(), map));
+                snakeBody.insert(0, new MovingCell(lastCell.getX() - MovingCell.SNAKE_MOVEMENT, lastCell.getY(), atlas, Direction.RIGHT, lastCell.getDirection(), map, 16, 16, 16, 16));
                 break;
             case LEFT:
-                snakeBody.insert(0, new MovingCell(lastCell.getX() + MovingCell.SNAKE_MOVEMENT, lastCell.getY(), Direction.LEFT, lastCell.getDirection(), map));
+                snakeBody.insert(0, new MovingCell(lastCell.getX() + MovingCell.SNAKE_MOVEMENT, lastCell.getY(), atlas,  Direction.LEFT, lastCell.getDirection(), map, 16, 16, 16, 16));
                 break;
             case DOWN:
-                snakeBody.insert(0,new MovingCell(lastCell.getX(), lastCell.getY() + MovingCell.SNAKE_MOVEMENT, Direction.DOWN, lastCell.getDirection(), map));
+                snakeBody.insert(0,new MovingCell(lastCell.getX(), lastCell.getY() + MovingCell.SNAKE_MOVEMENT, atlas, Direction.DOWN, lastCell.getDirection(), map, 16, 16, 16, 16));
                 break;
             case UP:
-                snakeBody.insert(0,new MovingCell(lastCell.getX(), lastCell.getY() - MovingCell.SNAKE_MOVEMENT, Direction.UP, lastCell.getDirection(), map));
+                snakeBody.insert(0,new MovingCell(lastCell.getX(), lastCell.getY() - MovingCell.SNAKE_MOVEMENT, atlas, Direction.UP, lastCell.getDirection(), map, 16, 16, 16, 16));
                 break;
         }
     }
