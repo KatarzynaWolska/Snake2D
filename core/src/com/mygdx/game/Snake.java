@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.screens.PlayScreen;
 import com.mygdx.game.sprites.Cell;
 import com.mygdx.game.sprites.MovingCell;
 
@@ -65,19 +66,44 @@ public class Snake {
 
     public void eat() {
         MovingCell lastCell = snakeBody.get(0);
+        MovingCell cell;
 
         switch (lastCell.getDirection()) {
             case RIGHT:
-                snakeBody.insert(0, new MovingCell(lastCell.getX() - MovingCell.SNAKE_MOVEMENT, lastCell.getY(), atlas, Direction.RIGHT, lastCell.getDirection(), map, 16, 16, 16, 16));
+                cell = new MovingCell(lastCell.getX() - MovingCell.SNAKE_MOVEMENT, lastCell.getY(), atlas, Direction.RIGHT, lastCell.getDirection(), map, 16, 16, 16, 16);
+
+                if(cell.getX() >= PlayScreen.WORLD_WIDTH) {
+                    cell.setPosition(0, cell.getY());
+                }
+
+                snakeBody.insert(0, cell);
                 break;
             case LEFT:
-                snakeBody.insert(0, new MovingCell(lastCell.getX() + MovingCell.SNAKE_MOVEMENT, lastCell.getY(), atlas,  Direction.LEFT, lastCell.getDirection(), map, 16, 16, 16, 16));
+                cell = new MovingCell(lastCell.getX() + MovingCell.SNAKE_MOVEMENT, lastCell.getY(), atlas,  Direction.LEFT, lastCell.getDirection(), map, 16, 16, 16, 16);
+
+                if(cell.getX() < 0) {
+                    cell.setPosition(PlayScreen.WORLD_WIDTH - MovingCell.SNAKE_MOVEMENT, cell.getY());
+                }
+
+                snakeBody.insert(0, cell);
                 break;
             case DOWN:
-                snakeBody.insert(0,new MovingCell(lastCell.getX(), lastCell.getY() + MovingCell.SNAKE_MOVEMENT, atlas, Direction.DOWN, lastCell.getDirection(), map, 16, 16, 16, 16));
+                cell = new MovingCell(lastCell.getX(), lastCell.getY() + MovingCell.SNAKE_MOVEMENT, atlas, Direction.DOWN, lastCell.getDirection(), map, 16, 16, 16, 16);
+
+                if(cell.getY() < 0) {
+                    cell.setPosition(cell.getX(), PlayScreen.WORLD_HEIGHT - MovingCell.SNAKE_MOVEMENT);
+                }
+
+                snakeBody.insert(0, cell);
                 break;
             case UP:
-                snakeBody.insert(0,new MovingCell(lastCell.getX(), lastCell.getY() - MovingCell.SNAKE_MOVEMENT, atlas, Direction.UP, lastCell.getDirection(), map, 16, 16, 16, 16));
+                cell = new MovingCell(lastCell.getX(), lastCell.getY() - MovingCell.SNAKE_MOVEMENT, atlas, Direction.UP, lastCell.getDirection(), map, 16, 16, 16, 16);
+
+                if(cell.getY() >= PlayScreen.WORLD_HEIGHT) {
+                    cell.setPosition(cell.getX(), 0);
+                }
+
+                snakeBody.insert(0, cell);
                 break;
         }
     }

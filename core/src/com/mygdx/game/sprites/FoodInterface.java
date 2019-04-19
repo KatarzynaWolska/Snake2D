@@ -7,14 +7,14 @@ import java.util.Random;
 public interface FoodInterface {
 
     default void generateFoodPosition(Cell food, Snake snake, Random random) {
-        int x = (random.nextInt(Cell.CELLS_ON_SCREEN)) * Cell.SIZE;
-        int y = (random.nextInt(Cell.CELLS_ON_SCREEN)) * Cell.SIZE;
+        int x;
+        int y;
 
-
-        while (!checkFoodPosition(x, y, snake)) {
+        do{
             x = (random.nextInt(Cell.CELLS_ON_SCREEN)) * Cell.SIZE;
             y = (random.nextInt(Cell.CELLS_ON_SCREEN)) * Cell.SIZE;
-        }
+        } while (!checkFoodPosition(x, y, snake));
+
 
         food.setX(x);
         food.setY(y);
@@ -26,9 +26,9 @@ public interface FoodInterface {
     }
 
     default boolean checkFoodPosition(int x, int y, Snake snake) {
-        if(snake.getSnakeHead().checkPosition(x, y)) {
+        if(!snake.getSnakeHead().checkPosition(x, y)) {
             for(MovingCell snakeCell : snake.getSnakeBody()) {
-                if(!snakeCell.checkPosition(x, y)) {
+                if(snakeCell.checkPosition(x, y)) {
                     return false;
                 }
             }

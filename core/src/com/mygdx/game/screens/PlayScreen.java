@@ -107,19 +107,22 @@ public class PlayScreen implements Screen {
                 spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
                 spider.generateRandomDirection();
 
-                while(spider.checkWallCollision()) {
+                while(spider.checkWallCollision() || spider.checkCellsCollision(food)) {
                     spider.generateFoodPosition(spider, snake, spider.getRandomGenerator());
                 }
             }
+
 
             if(renderSpider) {
                 spider.updatePosition();
                 spider.hitObstacle(snake, food);
             }
 
+
             checkAllColissions();
 
             snake.updatePosition();
+
 
             checkAllColissions();
 
@@ -133,7 +136,7 @@ public class PlayScreen implements Screen {
             hud.addScore(FOOD_SCORE);
             food.generateFoodPosition(food, snake, food.getRandomGenerator());
 
-            while(food.checkWallCollision()) {
+            while(food.checkWallCollision() || food.checkCellsCollision(spider)) {
                 food.generateFoodPosition(food, snake, food.getRandomGenerator());
             }
         }
@@ -191,6 +194,7 @@ public class PlayScreen implements Screen {
 
         sleep(FPS_SLEEP);
 
+
         renderer.render();
 
         debugRenderer.render(world, gameCamera.combined);
@@ -198,9 +202,12 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCamera.combined);
         game.batch.begin();
         snake.draw(game.batch);
+
         food.draw(game.batch);
+
         if(renderSpider) {
             spider.draw(game.batch);
+
         }
         game.batch.end();
 

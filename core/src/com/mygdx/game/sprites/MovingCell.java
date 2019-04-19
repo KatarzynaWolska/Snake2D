@@ -131,7 +131,7 @@ public class MovingCell extends Cell {
     }
 
     public boolean checkPosition(int x, int y) {
-        return (!(x == getX())) && (!(y == getY()));
+        return x == getX() && y == getY();
     }
 
     public void draw(Batch batch){
