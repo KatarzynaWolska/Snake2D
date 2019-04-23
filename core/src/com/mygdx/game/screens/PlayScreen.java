@@ -30,6 +30,7 @@ public class PlayScreen implements Screen {
     private SnakeGame game;
     private OrthographicCamera gameCamera;
     private Viewport gameViewport;
+    private String level;
 
     private TmxMapLoader mapLoader;
     private TiledMap map;
@@ -56,12 +57,13 @@ public class PlayScreen implements Screen {
     private static final int SPIDER_SCORE = 20;
 
 
-    public PlayScreen(SnakeGame game) {
+    public PlayScreen(SnakeGame game, String level) {
+        this.level = level;
         this.game = game;
         gameCamera = new OrthographicCamera();
         gameViewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, gameCamera);
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("level1.tmx");
+        map = mapLoader.load(level);
         renderer = new OrthogonalTiledMapRenderer(map);
         gameCamera.position.set(gameViewport.getWorldWidth() / 2, gameViewport.getWorldHeight() / 2, 0);
 
@@ -215,7 +217,7 @@ public class PlayScreen implements Screen {
         hud.stage.draw();
 
         if(gameOver) {
-            game.setScreen(new GameOverScreen(game));
+            game.setScreen(new GameOverScreen(game, level));
             dispose();
         }
 

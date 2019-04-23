@@ -17,10 +17,12 @@ public class GameOverScreen implements Screen {
 
     private Viewport viewport;
     private Stage stage;
+    private String level;
 
     private SnakeGame game;
 
-    public GameOverScreen(SnakeGame game) {
+    public GameOverScreen(SnakeGame game, String level) {
+        this.level = level;
         this.game = game;
         viewport = new StretchViewport(PlayScreen.WORLD_WIDTH, PlayScreen.WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
@@ -48,7 +50,7 @@ public class GameOverScreen implements Screen {
     @Override
     public void render(float delta) {
         if(Gdx.input.justTouched()) {
-            game.setScreen(new PlayScreen(game));
+            game.setScreen(new PlayScreen(game, level));
             dispose();
         }
 
