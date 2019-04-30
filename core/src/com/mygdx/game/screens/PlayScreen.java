@@ -51,7 +51,7 @@ public class PlayScreen implements Screen {
 
     public static final int WORLD_WIDTH = 400;
     public static final int WORLD_HEIGHT = 400;
-    private static final int FPS_SLEEP = 20;
+    public static int FPS_SLEEP = 20;
 
     private static final int FOOD_SCORE = 10;
     private static final int SPIDER_SCORE = 20;
@@ -92,7 +92,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
-
+        Gdx.input.setCatchBackKey(true);
     }
 
     private void update() {
@@ -191,6 +191,11 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            game.setScreen(new GameboardMenuScreen(game));
+            //dispose();
+        }
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

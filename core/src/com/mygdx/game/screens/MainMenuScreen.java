@@ -1,6 +1,7 @@
 package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -32,7 +33,6 @@ public class MainMenuScreen implements Screen {
         viewport = new StretchViewport(PlayScreen.WORLD_WIDTH, PlayScreen.WORLD_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
 
-        Gdx.input.setInputProcessor(stage);
 
         createSkin();
 
@@ -47,6 +47,23 @@ public class MainMenuScreen implements Screen {
            }
         });
 
+        TextButton optionsButton = new TextButton("Options", skin);
+        optionsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                dispose();
+                game.setScreen(new OptionsScreen(game));
+            }
+        });
+
+        TextButton statisticsButton = new TextButton("Statistics", skin);
+        statisticsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                dispose();
+                game.setScreen(new StatisticsScreen(game));
+            }
+        });
 
         TextButton exitButton = new TextButton("Exit", skin);
         exitButton.addListener(new ClickListener() {
@@ -65,19 +82,31 @@ public class MainMenuScreen implements Screen {
         table.row();
         table.add(newGameButton).height(PlayScreen.WORLD_HEIGHT / 8).expandX().padTop(20);
         table.row();
-        table.add(exitButton).height(PlayScreen.WORLD_HEIGHT / 8).expandX().padTop(150);
+        table.add(optionsButton).height(PlayScreen.WORLD_HEIGHT / 8).expandX().padTop(20);
+        table.row();
+        table.add(statisticsButton).height(PlayScreen.WORLD_HEIGHT / 8).expandX().padTop(20);
+        table.row();
+        table.add(exitButton).height(PlayScreen.WORLD_HEIGHT / 8).expandX().padTop(70);
 
 
         stage.addActor(table);
+
+        Gdx.input.setInputProcessor(stage);
+
     }
 
     @Override
     public void show() {
-
+        Gdx.input.setCatchBackKey(true);
     }
 
     @Override
     public void render(float delta) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            dispose();
+            System.exit(0);
+        }
+
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

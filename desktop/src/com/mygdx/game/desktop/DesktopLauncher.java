@@ -8,7 +8,7 @@ import static com.badlogic.gdx.Application.ApplicationType.Android;
 
 public class DesktopLauncher {
 
-	public static final int FPS = 15;
+	public static int FPS = 15;
 
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
