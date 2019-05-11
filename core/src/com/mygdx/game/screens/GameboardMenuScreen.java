@@ -38,6 +38,7 @@ public class GameboardMenuScreen implements Screen {
         firstGameboardButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.preferences.setActualGameboard("Gameboard 1");
                 dispose();
                 game.setScreen(new PlayScreen(game, level1));
             }
@@ -47,6 +48,7 @@ public class GameboardMenuScreen implements Screen {
         secondGameboardButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                game.preferences.setActualGameboard("Gameboard 2");
                 dispose();
                 game.setScreen(new PlayScreen(game, level2));
             }

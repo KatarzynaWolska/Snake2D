@@ -20,9 +20,11 @@ import com.mygdx.game.Direction;
 import com.mygdx.game.Snake;
 import com.mygdx.game.SnakeGame;
 import com.mygdx.game.controllers.SnakeController;
+import com.mygdx.game.preferences.GamePreferences;
 import com.mygdx.game.sprites.Food;
 import com.mygdx.game.sprites.Spider;
 
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class PlayScreen implements Screen {
@@ -45,6 +47,8 @@ public class PlayScreen implements Screen {
     private Food food;
     private Spider spider;
 
+    private Calendar calendar;
+
     private boolean gameOver = false;
     private boolean renderSpider = false;
     private int lastSpiderScore = 0;
@@ -60,6 +64,7 @@ public class PlayScreen implements Screen {
     public PlayScreen(SnakeGame game, String level) {
         this.level = level;
         this.game = game;
+        calendar = Calendar.getInstance();
         gameCamera = new OrthographicCamera();
         gameViewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, gameCamera);
         mapLoader = new TmxMapLoader();
@@ -222,6 +227,8 @@ public class PlayScreen implements Screen {
         hud.stage.draw();
 
         if(gameOver) {
+            //gamePreferences.putHighScore(hud.getScore());
+            game.preferences.putHighScore(hud.getScore(), calendar.getTime(), game.preferences.getActualGameboard());
             game.setScreen(new GameOverScreen(game, level));
             dispose();
         }

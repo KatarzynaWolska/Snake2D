@@ -6,15 +6,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.preferences.GamePreferences;
 import com.mygdx.game.screens.MainMenuScreen;
 import com.mygdx.game.screens.PlayScreen;
 
 public class SnakeGame extends Game {
     public SpriteBatch batch;
+    public GamePreferences preferences;
 
     @Override
     public void create () {
         this.batch = new SpriteBatch();
+        preferences = new GamePreferences();
         setScreen(new MainMenuScreen(this));
     }
 
