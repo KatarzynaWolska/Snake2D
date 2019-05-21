@@ -36,6 +36,10 @@ public class Cell extends Sprite {
         setRegion(atlas.findRegion(pathToTexture));
     }
 
+    public Cell(float x, float y) {
+        setBounds(x, y, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
+    }
+
     public void setX_coord(int x_coord) {
         this.x_coord = x_coord;
     }

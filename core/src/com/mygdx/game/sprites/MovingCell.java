@@ -20,13 +20,12 @@ public class MovingCell extends Cell {
         setBounds(SNAKE_MOVEMENT,SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
     }
 
-    /*public MovingCell() {
-        this.texture = new Texture("snake-body.png");
+    public MovingCell(float x, float y) {
+        super(x, y);
         this.direction = Direction.RIGHT;
         this.nextDirection = Direction.RIGHT;
-        setBounds(SNAKE_MOVEMENT,SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
-
-    }
+        setBounds(x, y, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
+    } /*
 
     public MovingCell(String pathToTexture) {
         this.texture = new Texture(pathToTexture);
