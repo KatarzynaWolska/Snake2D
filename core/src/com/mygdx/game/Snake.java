@@ -24,8 +24,13 @@ public class Snake {
     public Snake(TiledMap map, TextureAtlas atlas) {
         this.map = map;
         this.atlas = atlas;
-        this.snakeHead = new MovingCell(INITIAL_SNAKE_LENGTH * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT, atlas, HEAD_TEXTURE_PATH, map, 0, 16, 16, 16); //wywalić teskture
+        this.snakeHead = new MovingCell(INITIAL_SNAKE_LENGTH * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT, atlas, HEAD_TEXTURE_PATH, map, 0, 16, 16, 16);
         this.snakeHead.flip(true, false);
+        createSnakeBody();
+    }
+
+    public Snake() {
+        this.snakeHead = new MovingCell(INITIAL_SNAKE_LENGTH * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT);
         createSnakeBody();
     }
 
