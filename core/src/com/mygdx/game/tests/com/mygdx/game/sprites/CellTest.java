@@ -1,5 +1,6 @@
 package com.mygdx.game.sprites;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -16,7 +17,7 @@ public class CellTest {
         int y_test = 3;
         Cell cell_test = new Cell(x_test, y_test);
 
-        assertTrue(cell.checkCellsCollision(cell_test));
+        Assert.assertTrue(cell.checkCellsCollision(cell_test));
     }
 
     @Test
@@ -29,6 +30,6 @@ public class CellTest {
         int y_test = 5;
         Cell cell_test = new Cell(x_test, y_test);
 
-        assertFalse(cell.checkCellsCollision(cell_test));
+        Assert.assertFalse(cell.checkCellsCollision(cell_test));
     }
 }

@@ -11,8 +11,6 @@ public class MovingCell extends Cell {
     private Direction direction;
     private Direction nextDirection;
 
-    //texture = "snake-body.png"
-
     public MovingCell(TextureAtlas atlas, String pathToTexture, TiledMap map, float x1, float y1, float width, float height) {
         super(atlas, pathToTexture, map, x1, y1, width, height);
         this.direction = Direction.RIGHT;
@@ -25,17 +23,7 @@ public class MovingCell extends Cell {
         this.direction = Direction.RIGHT;
         this.nextDirection = Direction.RIGHT;
         setBounds(x, y, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
-    } /*
-
-    public MovingCell(String pathToTexture) {
-        this.texture = new Texture(pathToTexture);
-        this.direction = Direction.RIGHT;
-        this.nextDirection = Direction.RIGHT;
-        //defineBody();
-        setBounds(SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT, SNAKE_MOVEMENT);
-        setRegion(this.texture);
-
-    }*/
+    }
 
     public MovingCell(float x, float y, TextureAtlas atlas, Direction direction, Direction nextDirection, TiledMap map, float x1, float y1, float width, float height) {
         super(atlas, Snake.BODY_TEXTURE_PATH, map, x1, y1, width, height);

@@ -29,9 +29,9 @@ public class Snake {
         createSnakeBody();
     }
 
-    public Snake() {
-        this.snakeHead = new MovingCell(INITIAL_SNAKE_LENGTH * MovingCell.SNAKE_MOVEMENT, MovingCell.SNAKE_MOVEMENT);
-        createSnakeBody();
+    public Snake(MovingCell snakeHead, Array<MovingCell> snakeBody) {
+        this.snakeBody = snakeBody;
+        this.snakeHead = snakeHead;
     }
 
     private void createSnakeBody() {
